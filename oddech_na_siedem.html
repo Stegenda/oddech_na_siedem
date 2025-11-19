@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Oddech na siedem</title>
+<style>
+  body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f0f8ff; }
+  h1 { color: #2e8b57; }
+  #etap { font-size: 2em; margin: 20px 0; }
+  #sekunda { font-size: 1.5em; color: #555; }
+  #rundy { margin: 20px 0; font-size: 1.2em; }
+  .runda { display: inline-block; width: 30px; height: 30px; line-height: 30px; border-radius: 50%; border: 2px solid #2e8b57; margin: 0 5px; color: #2e8b57; }
+  .wykonana { background-color: #2e8b57; color: white; }
+  button { padding: 10px 20px; font-size: 1em; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<h1>Oddech na siedem 🌿</h1>
+<div id="rundy"></div>
+<div id="etap">Kliknij "Start", aby rozpocząć</div>
+<div id="sekunda"></div>
+<button id="startBtn">Start</button>
+
+<script>
+const powtorzenia = 7;
+const czasEtapu = 7; // sekundy
+const etapy = [
+  "Wdech nosem",
+  "Zatrzymaj powietrze",
+  "Wydech ustami",
+  "Przerwa przed następnym wdechem"
+];
+
+const etapDiv = document.getElementById("etap");
+const sekundaDiv = document.getElementById("sekunda");
+const startBtn = document.getElementById("startBtn");
+const rundyDiv = document.getElementById("rundy");
+
+// Tworzymy pasek rund
+for (let i = 1; i <= powtorzenia; i++) {
+  const span = document.createElement("span");
+  span.classList.add("runda");
+  span.id = "runda" + i;
+  span.textContent = i;
+  rundyDiv.appendChild(span);
+}
+
+startBtn.addEventListener("click", () => {
+  startBtn.disabled = true;
+  let runda = 0;
+
+  function startRunda() {
+    if (runda >= powtorzenia) {
+      etapDiv.textContent = "Ćwiczenie zakończone! 🌿";
+      sekundaDiv.textContent = "";
+      startBtn.disabled = false;
+      return;
+    }
+
+    runda++;
+    // Zaznacz wykonane rundy
+    for (let i = 1; i <= runda; i++) {
+      document.getElementById("runda" + i).classList.add("wykonana");
+    }
+
+    let etapIndex = 0;
+
+    function startEtap() {
+      if (etapIndex >= etapy.length) {
+        setTimeout(startRunda, 1000); // krótkie opóźnienie między rundami
+        return;
+      }
+
+      let sekunda = 1;
+      etapDiv.textContent = `Runda ${runda}: ${etapy[etapIndex]}`;
+      sekundaDiv.textContent = sekunda;
+
+      const interval = setInterval(() => {
+        sekunda++;
+        if (sekunda > czasEtapu) {
+          clearInterval(interval);
+          etapIndex++;
+          startEtap();
+        } else {
+          sekundaDiv.textContent = sekunda;
+        }
+      }, 1000);
+    }
+
+    startEtap();
+  }
+
+  startRunda();
+});
+</script>
+
+</body>
+</html>
